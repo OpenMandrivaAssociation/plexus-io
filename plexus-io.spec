@@ -57,8 +57,6 @@ Source1:        plexus-io-1.0-build.xml
 Source2:        plexus-io-settings.xml
 Source3:        plexus-io-1.0-jpp-depmap.xml
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-
 %if ! %{gcj_support}
 BuildArch:      noarch
 %endif
@@ -76,7 +74,9 @@ BuildRequires:  maven2-plugin-surefire
 %endif
 BuildRequires:  classworlds >= 0:1.1
 BuildRequires:  plexus-container-default 
-BuildRequires:  plexus-utils 
+BuildRequires:  plexus-utils
+BuildRequires:  plexus-maven-plugin 
+BuildRequires:  maven-wagon
 %if %{gcj_support}
 BuildRequires:    java-gcj-compat-devel
 %endif
