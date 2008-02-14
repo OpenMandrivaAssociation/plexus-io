@@ -50,6 +50,7 @@ Epoch:          0
 Summary:        Plexus IO Component
 License:        Apache License 2.0
 Group:          Development/Java
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:            http://plexus.codehaus.org/
 Source0:        %{name}-%{namedversion}.tar.gz
 # svn export http://svn.codehaus.org/plexus/plexus-components/tags/plexus-io-1.0-alpha-1/
