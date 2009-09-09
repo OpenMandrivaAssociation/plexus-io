@@ -45,7 +45,7 @@
 
 Name:           plexus-io
 Version:        1.0
-Release:        %mkrel 0.a1.1.0.1
+Release:        %mkrel 0.a1.1.0.2
 Epoch:          0
 Summary:        Plexus IO Component
 License:        Apache License 2.0
