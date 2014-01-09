@@ -1,46 +1,40 @@
+%{?_javapackages_macros:%_javapackages_macros}
 Name:           plexus-io
-Version:        1.0
-Release:        0.3.a5
+Version:        2.0.5
+Release:        8.1%{?dist}
 Summary:        Plexus IO Components
 
-Group:          Development/Java
+
 License:        ASL 2.0
 URL:            http://plexus.codehaus.org/plexus-components/plexus-io
-#svn export http://svn.codehaus.org/plexus/plexus-components/tags/plexus-io-1.0-alpha-5/
-#tar cjf plexus-io-1.0-alpha-5.tar.bz2 plexus-io-1.0-alpha-5/      
-Source0:        plexus-io-1.0-alpha-5.tar.bz2
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
+Source0:        https://github.com/sonatype/plexus-io/tarball/plexus-io-%{version}/%{name}-%{version}.tar.gz
+Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 BuildArch: noarch
 
-BuildRequires: java-devel >= 0:1.6.0 
-BuildRequires:  jpackage-utils
+BuildRequires: java-devel >= 1:1.6.0
+BuildRequires: jpackage-utils
 
 BuildRequires: plexus-utils
-BuildRequires: plexus-container-default
-BuildRequires: maven2
-BuildRequires: maven2-plugin-resources
-BuildRequires: maven2-plugin-compiler
-BuildRequires: maven2-plugin-jar
-BuildRequires: maven2-plugin-install
-BuildRequires: maven2-plugin-javadoc
-BuildRequires: maven-surefire-maven-plugin
+BuildRequires: plexus-containers-container-default
+BuildRequires: plexus-components-pom
+BuildRequires: maven-local
+BuildRequires: maven-compiler-plugin
+BuildRequires: maven-enforcer-plugin
+BuildRequires: maven-jar-plugin
+BuildRequires: maven-install-plugin
+BuildRequires: maven-javadoc-plugin
+BuildRequires: maven-resources-plugin
+BuildRequires: maven-surefire-plugin
 BuildRequires: maven-surefire-provider-junit
 BuildRequires: maven-doxia-sitetools
-BuildRequires: plexus-maven-plugin
-Requires:  jpackage-utils
-Requires: plexus-utils
-Requires: plexus-container-default
-
-Requires(post): jpackage-utils
-Requires(postun): jpackage-utils
+BuildRequires: mvn(org.apache.maven.plugins:maven-enforcer-plugin)
 
 %description
 Plexus IO is a set of plexus components, which are designed for use
-in I/O operations. 
+in I/O operations.
 
 %package javadoc
-Group:          Development/Java
+
 Summary:        Javadoc for %{name}
 
 %description javadoc
@@ -48,60 +42,83 @@ API documentation for %{name}.
 
 
 %prep
-%setup -q -n %{name}-1.0-alpha-5
-
-mkdir external_repo
-ln -s %{_javadir} external_repo/JPP
+%setup -q -n sonatype-plexus-io-1a0010b
+cp %{SOURCE1} .
 
 %build
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mvn-jpp \
-        -e \
-        -Dmaven2.jpp.mode=true \
-        -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-        install javadoc:javadoc
+export XMVN_COMPILER_SOURCE="1.5"
+%mvn_file  : plexus/io
+%mvn_build
 
 %install
-rm -rf %{buildroot}
+%mvn_install
 
-# jars
-install -d -m 0755 %{buildroot}%{_javadir}/plexus
-install -m 644 target/%{name}-1.0-alpha-5.jar   %{buildroot}%{_javadir}/plexus/io-1.0.jar
+%files -f .mfiles
+%doc NOTICE.txt LICENSE-2.0.txt
 
-(cd %{buildroot}%{_javadir}/plexus && for jar in *-%{version}*; \
-    do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
+%files javadoc -f .mfiles-javadoc
+%doc NOTICE.txt LICENSE-2.0.txt
 
-%add_to_maven_depmap org.codehaus.plexus %{name} %{version} JPP/plexus io
 
-# poms
-install -d -m 755 %{buildroot}%{_datadir}/maven2/poms
-install -pm 644 pom.xml \
-    %{buildroot}%{_datadir}/maven2/poms/JPP.%{name}.pom
+%changelog
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.5-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
-# javadoc
-install -d -m 0755 %{buildroot}%{_javadocdir}/%{name}-%{version}
-cp -pr target/site/api*/* %{buildroot}%{_javadocdir}/%{name}-%{version}/
-ln -s %{name}-%{version} %{buildroot}%{_javadocdir}/%{name}
-rm -rf target/site/api*
+* Wed Jun 12 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0.5-7
+- Add ASL 2.0 license text to rpms
 
-%post
-%update_maven_depmap
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.5-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
-%postun
-%update_maven_depmap
+* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 2.0.5-5
+- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
+- Replace maven BuildRequires with maven-local
 
-%clean
-%{__rm} -rf %{buildroot}
+* Thu Jan 17 2013 Michal Srb <msrb@redhat.com> - 2.0.5-4
+- Build with xmvn
 
-%files
-%defattr(-,root,root,-)
-%doc NOTICE.txt
-%{_javadir}/plexus/*.jar
-%{_datadir}/maven2/poms/*
-%{_mavendepmapfragdir}/*
+* Thu Nov 22 2012 Jaromir Capik <jcapik@redhat.com> - 2.0.5-3
+- Migration to plexus-containers-container-default
 
-%files javadoc
-%defattr(-,root,root,-)
-%{_javadocdir}/%{name}-%{version}
-%{_javadocdir}/%{name}
+* Tue Nov 13 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0.5-2
+- Use ordinary URL for Source0
+- Make sure we use 1.5 source/target
+- Add enforcer plugin to BR
 
+* Wed Oct 10 2012 Alexander Kurtakov <akurtako@redhat.com> 2.0.5-1
+- Update to upstream 2.0.5 release.
+
+* Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Wed Apr 18 2012 Alexander Kurtakov <akurtako@redhat.com> 2.0.4-1
+- Update to latest upstream.
+
+* Thu Feb 02 2012 Tomas Radej <tradej@redhat.com> - 2.0.2-1
+- Updated to upstream version
+
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
+* Thu Sep 8 2011 Alexander Kurtakov <akurtako@redhat.com> 2.0.1-1
+- Update to 2.0.1 upstream release.
+
+* Wed Jul 27 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.0.1-2
+- Use add_maven_depmap macro
+
+* Wed Jul 27 2011 Jaromir Capik <jcapik@redhat.com> - 1.0.1-2
+- Removal of plexus-maven-plugin dependency (not needed)
+- Minor spec file changes according to the latest guidelines
+
+* Tue May 17 2011 Alexander Kurtakov <akurtako@redhat.com> 1.0.1-1
+- Update to upstream 1.0.1.
+- Adapt to current guidelines.
+
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0-0.3.a5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Wed Dec 23 2009 Alexander Kurtakov <akurtako@redhat.com> 1.0-0.2.a5
+- Fix review comments.
+
+* Wed Dec 23 2009 Alexander Kurtakov <akurtako@redhat.com> 1.0-0.1.a5.1
+- Initial package
