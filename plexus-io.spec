@@ -1,40 +1,29 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:           plexus-io
-Version:        2.0.5
-Release:        8.1%{?dist}
+Version:        2.0.12
+Release:        1%{?dist}
 Summary:        Plexus IO Components
-
-
 License:        ASL 2.0
 URL:            http://plexus.codehaus.org/plexus-components/plexus-io
-Source0:        https://github.com/sonatype/plexus-io/tarball/plexus-io-%{version}/%{name}-%{version}.tar.gz
+BuildArch:      noarch
+
+Source0:        https://github.com/sonatype/plexus-io/archive/plexus-io-%{version}.tar.gz
 Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
-BuildArch: noarch
 
-BuildRequires: java-devel >= 1:1.6.0
-BuildRequires: jpackage-utils
+Patch0:         %{name}-test-failure.patch
 
-BuildRequires: plexus-utils
-BuildRequires: plexus-containers-container-default
-BuildRequires: plexus-components-pom
-BuildRequires: maven-local
-BuildRequires: maven-compiler-plugin
-BuildRequires: maven-enforcer-plugin
-BuildRequires: maven-jar-plugin
-BuildRequires: maven-install-plugin
-BuildRequires: maven-javadoc-plugin
-BuildRequires: maven-resources-plugin
-BuildRequires: maven-surefire-plugin
-BuildRequires: maven-surefire-provider-junit
-BuildRequires: maven-doxia-sitetools
-BuildRequires: mvn(org.apache.maven.plugins:maven-enforcer-plugin)
+BuildRequires:  plexus-utils
+BuildRequires:  plexus-containers-container-default
+BuildRequires:  plexus-components-pom
+BuildRequires:  maven-local
+BuildRequires:  maven-doxia-sitetools
+BuildRequires:  mvn(org.apache.maven.plugins:maven-enforcer-plugin)
 
 %description
 Plexus IO is a set of plexus components, which are designed for use
 in I/O operations.
 
 %package javadoc
-
 Summary:        Javadoc for %{name}
 
 %description javadoc
@@ -42,8 +31,9 @@ API documentation for %{name}.
 
 
 %prep
-%setup -q -n sonatype-plexus-io-1a0010b
+%setup -q -n plexus-io-plexus-io-%{version}
 cp %{SOURCE1} .
+%patch0
 
 %build
 export XMVN_COMPILER_SOURCE="1.5"
@@ -61,6 +51,18 @@ export XMVN_COMPILER_SOURCE="1.5"
 
 
 %changelog
+* Tue Sep 23 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.0.12-1
+- Update to upstream version 2.0.12
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.10-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0.10-2
+- Use Requires: java-headless rebuild (#1067528)
+
+* Tue Jan 21 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.0.10-1
+- Update to upstream version 2.0.10
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.5-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
@@ -122,3 +124,4 @@ export XMVN_COMPILER_SOURCE="1.5"
 
 * Wed Dec 23 2009 Alexander Kurtakov <akurtako@redhat.com> 1.0-0.1.a5.1
 - Initial package
+
