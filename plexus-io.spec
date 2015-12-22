@@ -3,6 +3,7 @@ Name:           plexus-io
 Version:        2.0.12
 Release:        1%{?dist}
 Summary:        Plexus IO Components
+Group:	Development/Java
 License:        ASL 2.0
 URL:            http://plexus.codehaus.org/plexus-components/plexus-io
 BuildArch:      noarch
@@ -12,6 +13,7 @@ Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 
 Patch0:         %{name}-test-failure.patch
 
+BuildRequires:	junit
 BuildRequires:  plexus-utils
 BuildRequires:  plexus-containers-container-default
 BuildRequires:  plexus-components-pom
@@ -34,6 +36,8 @@ API documentation for %{name}.
 %setup -q -n plexus-io-plexus-io-%{version}
 cp %{SOURCE1} .
 %patch0
+
+%pom_add_dep junit:junit::test
 
 %build
 export XMVN_COMPILER_SOURCE="1.5"
