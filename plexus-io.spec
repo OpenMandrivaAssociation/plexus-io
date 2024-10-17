@@ -5,7 +5,7 @@ Release:        1%{?dist}
 Summary:        Plexus IO Components
 Group:	Development/Java
 License:        ASL 2.0
-URL:            http://plexus.codehaus.org/plexus-components/plexus-io
+URL:            https://plexus.codehaus.org/plexus-components/plexus-io
 BuildArch:      noarch
 
 Source0:        https://github.com/sonatype/plexus-io/archive/plexus-io-%{version}.tar.gz
