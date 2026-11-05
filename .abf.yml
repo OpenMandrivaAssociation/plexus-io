@@ -1,4 +1,2 @@
-removed_sources:
-  plexus-io-2.0.5.tar.gz: b16a66ca597a2ac4f3b30162b28f8e4985cfd449
 sources:
-  plexus-io-2.0.12.tar.gz: ac503d77c52019b6c9ca3a648abc47f1c60112a1
+  plexus-io-3.4.0.tar.gz: d8681fe20157e7b06aef2be01b4824ce64643c1f

@@ -1,131 +1,32 @@
-%{?_javapackages_macros:%_javapackages_macros}
-Name:           plexus-io
-Version:        2.0.12
-Release:        1%{?dist}
-Summary:        Plexus IO Components
-Group:	Development/Java
-License:        ASL 2.0
-URL:            https://plexus.codehaus.org/plexus-components/plexus-io
-BuildArch:      noarch
-
-Source0:        https://github.com/sonatype/plexus-io/archive/plexus-io-%{version}.tar.gz
-Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
-
-Patch0:         %{name}-test-failure.patch
-
-BuildRequires:	junit
-BuildRequires:  plexus-utils
-BuildRequires:  plexus-containers-container-default
-BuildRequires:  plexus-components-pom
-BuildRequires:  maven-local
-BuildRequires:  maven-doxia-sitetools
-BuildRequires:  mvn(org.apache.maven.plugins:maven-enforcer-plugin)
+Name:		plexus-io
+Version:	3.4.0
+Release:	1
+Summary:	Plexus IO components
+Group:		Development/Java
+License:	ASL 2.0
+URL:		https://codehaus-plexus.github.io/plexus-io/
+Source0:	https://github.com/codehaus-plexus/plexus-io/archive/refs/tags/plexus-io-%{version}.tar.gz
+BuildArch:	noarch
+# Literal, so the first rpmbuild -bs records them before sysjar is installed.
+BuildRequires:	maven
+BuildRequires:	java-current-devel
+BuildRequires:	plexus-pom
+BuildRequires:	plexus-utils
+BuildRequires:	mvn(commons-io:commons-io)
+BuildRequires:	mvn(javax.inject:javax.inject)
+# provided scope: sources import javax.annotation, and Maven still resolves it
+BuildRequires:	mvn(com.google.code.findbugs:jsr305)
+BuildSystem:	maven
+BuildOption(install):	--file-name %{name}
 
 %description
-Plexus IO is a set of plexus components, which are designed for use
-in I/O operations.
-
-%package javadoc
-Summary:        Javadoc for %{name}
-
-%description javadoc
-API documentation for %{name}.
-
+Input, output, and file-selection helpers shared by Plexus components.
+3.4.0 is the last release that still builds against Plexus Utils 3.
+IncludeExcludeFileSelector, which the Maven Javadoc plugin imports, is
+in this jar.
 
 %prep
-%setup -q -n plexus-io-plexus-io-%{version}
-cp %{SOURCE1} .
-%patch0
-
-%pom_add_dep junit:junit::test
-
-%build
-export XMVN_COMPILER_SOURCE="1.5"
-%mvn_file  : plexus/io
-%mvn_build
-
-%install
-%mvn_install
+%autosetup -n plexus-io-plexus-io-%{version}
 
 %files -f .mfiles
-%doc NOTICE.txt LICENSE-2.0.txt
-
-%files javadoc -f .mfiles-javadoc
-%doc NOTICE.txt LICENSE-2.0.txt
-
-
-%changelog
-* Tue Sep 23 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.0.12-1
-- Update to upstream version 2.0.12
-
-* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.10-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
-
-* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0.10-2
-- Use Requires: java-headless rebuild (#1067528)
-
-* Tue Jan 21 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.0.10-1
-- Update to upstream version 2.0.10
-
-* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.5-8
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
-
-* Wed Jun 12 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0.5-7
-- Add ASL 2.0 license text to rpms
-
-* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.5-6
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
-
-* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 2.0.5-5
-- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
-- Replace maven BuildRequires with maven-local
-
-* Thu Jan 17 2013 Michal Srb <msrb@redhat.com> - 2.0.5-4
-- Build with xmvn
-
-* Thu Nov 22 2012 Jaromir Capik <jcapik@redhat.com> - 2.0.5-3
-- Migration to plexus-containers-container-default
-
-* Tue Nov 13 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 2.0.5-2
-- Use ordinary URL for Source0
-- Make sure we use 1.5 source/target
-- Add enforcer plugin to BR
-
-* Wed Oct 10 2012 Alexander Kurtakov <akurtako@redhat.com> 2.0.5-1
-- Update to upstream 2.0.5 release.
-
-* Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.4-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
-
-* Wed Apr 18 2012 Alexander Kurtakov <akurtako@redhat.com> 2.0.4-1
-- Update to latest upstream.
-
-* Thu Feb 02 2012 Tomas Radej <tradej@redhat.com> - 2.0.2-1
-- Updated to upstream version
-
-* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
-
-* Thu Sep 8 2011 Alexander Kurtakov <akurtako@redhat.com> 2.0.1-1
-- Update to 2.0.1 upstream release.
-
-* Wed Jul 27 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 1.0.1-2
-- Use add_maven_depmap macro
-
-* Wed Jul 27 2011 Jaromir Capik <jcapik@redhat.com> - 1.0.1-2
-- Removal of plexus-maven-plugin dependency (not needed)
-- Minor spec file changes according to the latest guidelines
-
-* Tue May 17 2011 Alexander Kurtakov <akurtako@redhat.com> 1.0.1-1
-- Update to upstream 1.0.1.
-- Adapt to current guidelines.
-
-* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0-0.3.a5
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
-
-* Wed Dec 23 2009 Alexander Kurtakov <akurtako@redhat.com> 1.0-0.2.a5
-- Fix review comments.
-
-* Wed Dec 23 2009 Alexander Kurtakov <akurtako@redhat.com> 1.0-0.1.a5.1
-- Initial package
-
+%doc NOTICE.txt README.md ReleaseNotes.md
