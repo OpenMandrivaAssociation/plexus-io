@@ -1,2 +1,4 @@
 sources:
+  plexus-io-3.8.1.tar.gz: c4223166fcd927c1c87035bd6fb0b8cc6277a66c
+removed_sources:
   plexus-io-3.4.0.tar.gz: d8681fe20157e7b06aef2be01b4824ce64643c1f
